@@ -51,6 +51,18 @@ file that was distributed with this source code.
                 <script src="{{ asset(javascript) }}" type="text/javascript"></script>
             {% endfor %}
 
+            {% if admin_pool is defined and admin_pool.getOption('use_select2') %}
+                {# localize select2 #}
+                {% set locale = app.request.locale %}
+
+                {% if locale == 'pt' %}{% set locale = 'pt_PT' %}{% endif %}
+
+                {# omit default EN locale, select2 is not localized to LB and SL yet #}
+                {% if locale[:2] not in ['en', 'lb', 'sl'] %}
+                    <script src="{{ asset('bundles/sonataadmin/vendor/select2/select2_locale_' ~ locale|replace({'_':'-'}) ~ '.js') }}"></script>
+                {% endif %}
+            {% endif %}
+
         {% endblock %}
 
         <title>
