@@ -16,6 +16,7 @@ use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
 use Sonata\AdminBundle\Builder\FormContractorInterface;
 use Sonata\AdminBundle\Builder\ListBuilderInterface;
 use Sonata\AdminBundle\Builder\DatagridBuilderInterface;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface;
 use Sonata\AdminBundle\Builder\RouteBuilderInterface;
 use Sonata\AdminBundle\Translator\LabelTranslatorStrategyInterface;
@@ -23,6 +24,7 @@ use Sonata\AdminBundle\Validator\ErrorElement;
 use Sonata\AdminBundle\Route\RouteGeneratorInterface;
 
 use Knp\Menu\FactoryInterface as MenuFactoryInterface;
+use Knp\Menu\ItemInterface as MenuItemInterface;
 
 use Symfony\Component\Validator\ValidatorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -717,6 +719,16 @@ interface AdminInterface
     public function postRemove($object);
 
     /**
+     * Call before the batch action, allow you to alter the query and the idx
+     *
+     * @param string              $actionName
+     * @param ProxyQueryInterface $query
+     * @param array               $idx
+     * @param bool                $allElements
+     */
+    public function preBatchAction($actionName, ProxyQueryInterface $query, array & $idx, $allElements);
+
+    /**
      * Return array of filter parameters.
      *
      * @return array
@@ -971,4 +983,26 @@ interface AdminInterface
      * @return string
      */
     public function getTranslationLabel($label, $context = '', $type = '');
+
+    /**
+     * DEPRECATED: Use buildTabMenu instead
+     *
+     * @param string                                   $action
+     * @param \Sonata\AdminBundle\Admin\AdminInterface $childAdmin
+     *
+     * @return \Knp\Menu\ItemInterface|boolean
+     *
+     * @deprecated Use buildTabMenu instead
+     */
+    public function buildSideMenu($action, AdminInterface $childAdmin = null);
+
+    /**
+     * Build the tab menu related to the current action
+     *
+     * @param string                                   $action
+     * @param \Sonata\AdminBundle\Admin\AdminInterface $childAdmin
+     *
+     * @return \Knp\Menu\ItemInterface|boolean
+     */
+    public function buildTabMenu($action, AdminInterface $childAdmin = null);
 }

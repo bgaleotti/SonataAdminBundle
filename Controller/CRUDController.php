@@ -244,8 +244,11 @@ class CRUDController extends Controller
 
                 $this->addFlash(
                     'sonata_flash_success',
-                    $this->admin->trans('flash_delete_success', array('%name%' => $this->admin->toString($object)),
-                    'SonataAdminBundle')
+                    $this->admin->trans(
+                        'flash_delete_success',
+                        array('%name%' => $this->admin->toString($object)),
+                        'SonataAdminBundle'
+                    )
                 );
 
             } catch (ModelManagerException $e) {
@@ -256,8 +259,11 @@ class CRUDController extends Controller
 
                 $this->addFlash(
                     'sonata_flash_error',
-                    $this->admin->trans('flash_delete_error', array('%name%' => $this->admin->toString($object)),
-                    'SonataAdminBundle')
+                    $this->admin->trans(
+                        'flash_delete_error',
+                        array('%name%' => $this->admin->toString($object)),
+                        'SonataAdminBundle'
+                    )
                 );
             }
 
@@ -305,7 +311,7 @@ class CRUDController extends Controller
         $form->setData($object);
 
         if ($this->getRestMethod() == 'POST') {
-            $form->bind($this->get('request'));
+            $form->submit($this->get('request'));
 
             $isFormValid = $form->isValid();
 
@@ -474,6 +480,8 @@ class CRUDController extends Controller
         $query->setFirstResult(null);
         $query->setMaxResults(null);
 
+        $this->admin->preBatchAction($action, $query, $idx, $allElements);
+
         if (count($idx) > 0) {
             $this->admin->getModelManager()->addIdentifiersToQuery($this->admin->getClass(), $query, $idx);
         } elseif (!$allElements) {
@@ -507,7 +515,7 @@ class CRUDController extends Controller
         $form->setData($object);
 
         if ($this->getRestMethod()== 'POST') {
-            $form->bind($this->get('request'));
+            $form->submit($this->get('request'));
 
             $isFormValid = $form->isValid();
 
@@ -734,11 +742,12 @@ class CRUDController extends Controller
 
         $allowedExportFormats = (array) $this->admin->getExportFormats();
 
-        if (!in_array($format, $allowedExportFormats) ) {
+        if (!in_array($format, $allowedExportFormats)) {
             throw new \RuntimeException(sprintf('Export in format `%s` is not allowed for class: `%s`. Allowed formats are: `%s`', $format, $this->admin->getClass(), implode(', ', $allowedExportFormats)));
         }
 
-        $filename = sprintf('export_%s_%s.%s',
+        $filename = sprintf(
+            'export_%s_%s.%s',
             strtolower(substr($this->admin->getClass(), strripos($this->admin->getClass(), '\\') + 1)),
             date('Y_m_d_H_i_s', strtotime('now')),
             $format
@@ -811,7 +820,7 @@ class CRUDController extends Controller
 
         $request = $this->getRequest();
         if ($request->getMethod() === 'POST') {
-            $form->bind($request);
+            $form->submit($request);
 
             if ($form->isValid()) {
                 $adminObjectAclManipulator->updateAcl($adminObjectAclData);
