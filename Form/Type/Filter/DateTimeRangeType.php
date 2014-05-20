@@ -50,6 +50,8 @@ class DateTimeRangeType extends AbstractType
             self::TYPE_NOT_BETWEEN    => $this->translator->trans('label_date_type_not_between', array(), 'SonataAdminBundle'),
         );
 
+		$options['field_type'] = 'sonata_type_datetime_range';
+
         $builder
             ->add('type', 'choice', array('choices' => $choices, 'required' => false))
             ->add('value', $options['field_type'], array('field_options' => $options['field_options']))
