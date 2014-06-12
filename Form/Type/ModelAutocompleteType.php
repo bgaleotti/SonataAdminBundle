@@ -45,6 +45,7 @@ class ModelAutocompleteType extends AbstractType
 
         $builder->setAttribute('property', $options['property']);
         $builder->setAttribute('callback', $options['callback']);
+        $builder->setAttribute('text_callback', $options['text_callback']);
         $builder->setAttribute('minimum_input_length', $options['minimum_input_length']);
         $builder->setAttribute('items_per_page', $options['items_per_page']);
         $builder->setAttribute('search_type', $options['search_type']);
@@ -86,6 +87,7 @@ class ModelAutocompleteType extends AbstractType
             'callback'                        => null,
             'search_type'                     => self::SEARCH_TYPE_CONTAINS,
             'multiple'                        => false,
+            'text_callback'                   => null,
 
             'placeholder'                     => '',
             'minimum_input_length'            => 3, //minimum 3 chars should be typed to load ajax data

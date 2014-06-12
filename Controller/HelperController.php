@@ -364,6 +364,7 @@ class HelperController
 
         $property = $formAutocomplete->getConfig()->getAttribute('property');
         $callback = $formAutocomplete->getConfig()->getAttribute('callback');
+        $textCallback = $formAutocomplete->getConfig()->getAttribute('text_callback');
         $minimumInputLength = $formAutocomplete->getConfig()->getAttribute('minimum_input_length');
         $limit = $formAutocomplete->getConfig()->getAttribute('items_per_page');
         $searchType = $formAutocomplete->getConfig()->getAttribute('search_type');
@@ -396,7 +397,13 @@ class HelperController
 
         $results = $queryBuilder->getQuery()->getResult();
 
-        $propertyGetter = 'get'.ucfirst($property);
+        if (null === $textCallback || !is_callable($textCallback)) {
+            $textCallback = function($object) use ($property) {
+                $propertyGetter = 'get'.ucfirst($property);
+
+                return call_user_func(array($object, $propertyGetter));
+            };
+        }
 
         $items = array();
         $i = 0;
@@ -409,7 +416,10 @@ class HelperController
                 break;
             }
 
-            $items[] = array('id'=>current($modelManager->getIdentifierValues($object)), 'title'=>( call_user_func(array($object, $propertyGetter))));
+            $items[] = array(
+                'id'    => current($modelManager->getIdentifierValues($object)),
+                'title' => call_user_func_array($textCallback, array($object)),
+            );
         }
 
         return new JsonResponse(array('status' => 'OK', 'more'=>(count($results) == $limit+1), 'items' => $items));
