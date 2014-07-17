@@ -37,7 +37,7 @@ class ModelAutocompleteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->addViewTransformer(new ModelToIdPropertyTransformer($options['model_manager'], $options['class'], $options['property'], $options['multiple']), true)
+                ->addViewTransformer(new ModelToIdPropertyTransformer($options['model_manager'], $options['class'], $options['property'], $options['multiple'], $options['text_callback']), true)
         ;
 
         $builder->add('title', 'text', array('attr' => ['class' => 'col-md-12'], 'property_path' => '[titles][0]'));

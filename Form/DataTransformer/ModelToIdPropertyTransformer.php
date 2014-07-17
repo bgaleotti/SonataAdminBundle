@@ -31,17 +31,27 @@ class ModelToIdPropertyTransformer implements DataTransformerInterface
 
     protected $multiple;
 
+    protected $textCallback;
+
     /**
      * @param ModelManagerInterface $modelManager
      * @param string                $className
      * @param string                $property
      */
-    public function __construct(ModelManagerInterface $modelManager, $className, $property, $multiple)
+    public function __construct(ModelManagerInterface $modelManager, $className, $property, $multiple, $textCallback = null)
     {
         $this->modelManager = $modelManager;
         $this->className    = $className;
         $this->property     = $property;
         $this->multiple     = $multiple;
+
+        if (null === $textCallback || !is_callable($textCallback)) {
+            $textCallback = function($object) {
+                return call_user_func([$object, 'get'.ucfirst($this->property)]);
+            };
+        }
+
+        $this->textCallback = $textCallback;
     }
 
     /**
@@ -103,7 +113,7 @@ class ModelToIdPropertyTransformer implements DataTransformerInterface
 
         foreach ($collection as $entity) {
             $id  = current($this->modelManager->getIdentifierValues($entity));
-            $title = call_user_func(array($entity, 'get'.ucfirst($this->property)));
+            $title = call_user_func($this->textCallback, $entity);
 
             $result['identifiers'][] = $id;
             $result['titles'][] = $title;
