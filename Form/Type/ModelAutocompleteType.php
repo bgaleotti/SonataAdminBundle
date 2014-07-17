@@ -40,7 +40,7 @@ class ModelAutocompleteType extends AbstractType
                 ->addViewTransformer(new ModelToIdPropertyTransformer($options['model_manager'], $options['class'], $options['property'], $options['multiple']), true)
         ;
 
-        $builder->add('title', 'text', array('attr'=>array('class'=>'span5'), 'property_path' => '[titles][0]'));
+        $builder->add('title', 'text', array('attr' => ['class' => 'col-md-12'], 'property_path' => '[titles][0]'));
         $builder->add('identifiers', 'collection', array('type'=>'hidden', 'allow_add' => true, 'allow_delete' => true));
 
         $builder->setAttribute('property', $options['property']);
